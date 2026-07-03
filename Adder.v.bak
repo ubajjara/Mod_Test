@@ -1,0 +1,7 @@
+module Adder(
+	input lcd,
+	output w_p
+);
+
+	assign w_p = lcd + 3'h4;
+endmodule

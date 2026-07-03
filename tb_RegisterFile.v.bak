@@ -1,0 +1,94 @@
+`timescale 1ns/1ps
+
+module tb_RegisterFile;
+
+    // Entradas
+    reg [31:0] wd3;
+    reg [4:0] wa3;
+    reg we3;
+    reg clk;
+    reg rst;
+    reg [4:0] ra1;
+    reg [4:0] ra2;
+
+    // Saídas
+    wire [31:0] rd1;
+    wire [31:0] rd2;
+
+    // Instancia o módulo
+    RegisterFile uut (
+        .wd3(wd3),
+        .wa3(wa3),
+        .we3(we3),
+        .clk(clk),
+        .rst(rst),
+        .ra1(ra1),
+        .ra2(ra2),
+        .rd1(rd1),
+        .rd2(rd2)
+    );
+
+    // Clock de 10ns
+    always #5 clk = ~clk;
+
+    initial begin
+        
+        // Valores iniciais
+        clk = 0;
+        rst = 0;
+        we3 = 0;
+        wd3 = 0;
+        wa3 = 0;
+        ra1 = 0;
+        ra2 = 0;
+
+        // Reset
+        #10;
+        rst = 1;
+
+        // Escreve no registrador 5
+        #10;
+        we3 = 1;
+        wa3 = 5;
+        wd3 = 32'hAAAA5555;
+
+        // Espera clock
+        #10;
+
+        // Lê registrador 5
+        we3 = 0;
+        ra1 = 5;
+
+        #10;
+
+        // Escreve no registrador 10
+        we3 = 1;
+        wa3 = 10;
+        wd3 = 32'h12345678;
+
+        #10;
+
+        // Lê registradores 5 e 10
+        we3 = 0;
+        ra1 = 5;
+        ra2 = 10;
+
+        #10;
+
+        // Tenta escrever no registrador 0
+        we3 = 1;
+        wa3 = 0;
+        wd3 = 32'hFFFFFFFF;
+
+        #10;
+
+        // Lê registrador 0
+        we3 = 0;
+        ra1 = 0;
+
+        #10;
+
+        $stop;
+    end
+
+endmodule

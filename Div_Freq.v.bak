@@ -1,0 +1,25 @@
+module Div_Freq(
+    input  wire clk_in,   // CLOCK_50 (50MHz)
+    output reg  clk_out   // saída de 1Hz
+);
+
+    // 50_000_000 Hz / (2 * 25_000_000) = 1 Hz
+    parameter DIVISOR = 25_000_000;
+
+    reg [24:0] counter;
+
+    initial begin
+        counter = 0;
+        clk_out = 0;
+    end
+
+    always @(posedge clk_in) begin
+        if (counter == DIVISOR - 1) begin
+            counter <= 0;
+            clk_out <= ~clk_out;
+        end else begin
+            counter <= counter + 1;
+        end
+    end
+
+endmodule

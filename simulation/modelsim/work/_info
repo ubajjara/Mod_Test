@@ -1,0 +1,45 @@
+m255
+K3
+13
+cModel Technology
+Z0 dC:\Users\Uba\Documents\Arquitetura\simulation\modelsim
+vRegisterFile
+!i10b 1
+Z1 !s100 i`]kJS?eFD`>HebzZjm]k2
+Z2 I`f0PoQ:]G][IG`@UTP@nh2
+Z3 VX6ZLSmC[NRl9]Mzj6fgCc3
+Z4 dC:\Users\Uba\Documents\Arquitetura\simulation\modelsim
+Z5 w1779916581
+Z6 8C:/Users/Uba/Documents/Arquitetura/RegisterFile.v
+Z7 FC:/Users/Uba/Documents/Arquitetura/RegisterFile.v
+L0 1
+Z8 OV;L;10.1d;51
+r1
+!s85 0
+31
+!s108 1779917196.621000
+!s107 C:/Users/Uba/Documents/Arquitetura/RegisterFile.v|
+Z9 !s90 -reportprogress|300|-work|work|C:/Users/Uba/Documents/Arquitetura/RegisterFile.v|
+!s101 -O0
+Z10 o-work work -O0
+Z11 n@register@file
+vtb_RegisterFile
+Z12 ImS8;^d:=BM@2A;OH5PoTf0
+Z13 VN__[<CUdeaRPOHe0_^4DR2
+R4
+Z14 w1779916795
+Z15 8C:/Users/Uba/Documents/Arquitetura/tb_RegisterFile.v
+Z16 FC:/Users/Uba/Documents/Arquitetura/tb_RegisterFile.v
+L0 3
+R8
+r1
+31
+R10
+Z17 ntb_@register@file
+!i10b 1
+Z18 !s100 9joehI^nL6:NmLni2X1of2
+!s85 0
+Z19 !s108 1779917194.172000
+Z20 !s107 C:/Users/Uba/Documents/Arquitetura/tb_RegisterFile.v|
+Z21 !s90 -reportprogress|300|-work|work|C:/Users/Uba/Documents/Arquitetura/tb_RegisterFile.v|
+!s101 -O0

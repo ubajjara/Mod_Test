@@ -1,0 +1,125 @@
+# Reading C:/altera/13.0sp1/modelsim_ase/tcl/vsim/pref.tcl 
+# do Mod_Teste_run_msim_rtl_verilog.do 
+# if {[file exists rtl_work]} {
+# 	vdel -lib rtl_work -all
+# }
+# vlib rtl_work
+# vmap work rtl_work
+# Copying C:\altera\13.0sp1\modelsim_ase\win32aloem/../modelsim.ini to modelsim.ini
+# Modifying modelsim.ini
+# ** Warning: Copied C:\altera\13.0sp1\modelsim_ase\win32aloem/../modelsim.ini to modelsim.ini.
+#          Updated modelsim.ini.
+# 
+# vlog -vlog01compat -work work +incdir+C:/Users/Uba/Documents/Arquitetura {C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module Mod_Teste
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(6): (vlog-2892) Net type of 'KEY' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(7): (vlog-2892) Net type of 'SW' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(9): (vlog-2892) Net type of 'HEX0' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(9): (vlog-2892) Net type of 'HEX1' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(9): (vlog-2892) Net type of 'HEX2' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(9): (vlog-2892) Net type of 'HEX3' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(9): (vlog-2892) Net type of 'HEX4' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(9): (vlog-2892) Net type of 'HEX5' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(9): (vlog-2892) Net type of 'HEX6' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(9): (vlog-2892) Net type of 'HEX7' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(10): (vlog-2892) Net type of 'LEDG' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(11): (vlog-2892) Net type of 'LEDR' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(15): (vlog-2892) Net type of 'LCD_DATA' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(18): (vlog-2892) Net type of 'GPIO_0' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(19): (vlog-2892) Net type of 'GPIO_1' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(4): (vlog-2892) Net type of 'CLOCK_27' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(4): (vlog-2892) Net type of 'CLOCK_50' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(13): (vlog-2892) Net type of 'UART_TXD' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(14): (vlog-2892) Net type of 'UART_RXD' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(16): (vlog-2892) Net type of 'LCD_ON' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(16): (vlog-2892) Net type of 'LCD_BLON' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(16): (vlog-2892) Net type of 'LCD_RW' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(16): (vlog-2892) Net type of 'LCD_EN' must be explicitly declared.
+# 
+# ** Error: C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v(16): (vlog-2892) Net type of 'LCD_RS' must be explicitly declared.
+# 
+# ** Error: C:/altera/13.0sp1/modelsim_ase/win32aloem/vlog failed.
+# Error in macro ./Mod_Teste_run_msim_rtl_verilog.do line 8
+# C:/altera/13.0sp1/modelsim_ase/win32aloem/vlog failed.
+#     while executing
+# "vlog -vlog01compat -work work +incdir+C:/Users/Uba/Documents/Arquitetura {C:/Users/Uba/Documents/Arquitetura/Mod_Teste.v}"
+vlog -reportprogress 300 -work work C:/Users/Uba/Documents/Arquitetura/RegisterFile.v
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module RegisterFile
+# 
+# Top level modules:
+# 	RegisterFile
+vlog -reportprogress 300 -work work C:/Users/Uba/Documents/Arquitetura/tb_RegisterFile.v
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module tb_RegisterFile
+# 
+# Top level modules:
+# 	tb_RegisterFile
+vlog -reportprogress 300 -work work C:/Users/Uba/Documents/Arquitetura/RegisterFile.v
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module RegisterFile
+# 
+# Top level modules:
+# 	RegisterFile
+vsim work.tb_RegisterFile
+# vsim work.tb_RegisterFile 
+# Loading work.tb_RegisterFile
+# Loading work.RegisterFile
+add wave -position insertpoint sim:/tb_RegisterFile/*
+run
+# OK Reg[1] = 1
+# OK Reg[2] = 2
+# OK Reg[3] = 3
+# OK Reg[4] = 4
+# OK Reg[5] = 5
+# OK Reg[6] = 6
+# OK Reg[7] = 7
+# OK Reg[8] = 8
+# OK Reg[9] = 9
+# OK Reg[10] = 10
+# OK Reg[11] = 11
+# OK Reg[12] = 12
+# OK Reg[13] = 13
+# OK Reg[14] = 14
+# OK Reg[15] = 15
+# OK Reg[16] = 16
+# OK Reg[17] = 17
+# OK Reg[18] = 18
+# OK Reg[19] = 19
+# OK Reg[20] = 20
+# OK Reg[21] = 21
+# OK Reg[22] = 22
+# OK Reg[23] = 23
+# OK Reg[24] = 24
+# OK Reg[25] = 25
+# OK Reg[26] = 26
+# OK Reg[27] = 27
+# OK Reg[28] = 28
+# OK Reg[29] = 29
+# OK Reg[30] = 30
+# OK Reg[31] = 31
+# OK Reg[0] = 0
+# Break in Module tb_RegisterFile at C:/Users/Uba/Documents/Arquitetura/tb_RegisterFile.v line 77

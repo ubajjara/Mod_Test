@@ -1,0 +1,4 @@
+module Instr_Mem(
+    input wire [9:0] A,
+    output reg [31:0] RD
+);
