@@ -96,8 +96,10 @@ Duas consequências para a RTL. Como o resultado é gravado **no lugar**, `C` pr
 
 ## 4. FSM do Controlador `minisoc_aes_top`
 
-A máquina de estados orquestra a leitura da SRAM, o processamento de blocos e a reescrita *in-place*. 
 
+A FSM principal coordena a operação AES, enquanto o módulo auxiliar `minisoc_aes_mem_ctrl` controla os acessos à memória. Dessa forma, a máquina principal concentra-se no controle do processamento criptográfico.
+
+```mermaid
 stateDiagram-v2
   direction TB
   [*] --> IDLE
@@ -120,16 +122,15 @@ stateDiagram-v2
   CRYPT --> DONE: Último bloco concluído
 
   DONE --> IDLE: Evento de término enviado
-  
+```
+
 | Estado | O que faz |
 |---|---|
 | **IDLE** | Aguarda o evento de START. |
-| **CHECK** | Valida a configuração (`MODE ≤ 101`, `1 ≤ NUM_BLOCKS ≤ 256`). Emite o sinal de carregamento de chave. |
-| **KSETUP** | Expansão prévia até a rodada 10 (exclusivo para decifragem em ECB/CBC/PCBC). Ocorre apenas 1 vez por operação. |
-| **RD** | Lê 4 palavras (endereços `base` a `base+3`). Monta o estado `blk_in`. |
-| **CRYPT** | Executa o XOR de entrada, as 10 rodadas ativas iterativas e o XOR de saída. |
-| **WR** | Grava o resultado de 128 bits *in-place* na memória. Atualiza `V`, `ctr`, endereço base e `BLOCKS_DONE`. |
-| **DONE** | Dispara o pulso sincronizado de conclusão ou erro. |
+| **CHECK** | Valida a configuração (`MODE ≤ 101`, `1 ≤ NUM_BLOCKS ≤ 256`) e captura os parâmetros da operação. |
+| **KSETUP** | Prepara a round key K10, exclusivamente na decifragem ECB, CBC e PCBC. Ocorre uma vez por operação. |
+| **CRYPT** | Coordena o processamento dos blocos, solicitando leitura ao controlador de memória, iniciando o datapath AES e solicitando a gravação dos resultados. |
+| **DONE** | Sinaliza a conclusão ou o erro da operação. |
 
 ## 5. Clock Domain Crossing (CDC)
 
