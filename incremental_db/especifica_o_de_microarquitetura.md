@@ -98,30 +98,29 @@ Duas consequências para a RTL. Como o resultado é gravado **no lugar**, `C` pr
 
 A máquina de estados orquestra a leitura da SRAM, o processamento de blocos e a reescrita *in-place*. 
 
-```mermaid
 stateDiagram-v2
   direction TB
   [*] --> IDLE
+
   IDLE: IDLE
   CHECK: CHECK (1 ciclo)
   KSETUP: KSETUP (10 ciclos)
-  RD: RD (5 ciclos)
-  CRYPT: CRYPT (11 ciclos)
-  WR: WR (4 ciclos)
+  CRYPT: CRYPT
   DONE: DONE (1 ciclo)
-  
-  IDLE --> CHECK: START
-  CHECK --> DONE: Erro de Configuração
-  CHECK --> KSETUP: Decifragem (ECB, CBC, PCBC)
-  CHECK --> RD: Demais modos
-  KSETUP --> RD: rk10 gerada
-  RD --> CRYPT: Carga de 4 palavras
-  CRYPT --> WR: 10 rodadas concluídas
-  WR --> RD: BLOCKS_DONE < NUM_BLOCKS
-  WR --> DONE: BLOCKS_DONE == NUM_BLOCKS
-  DONE --> IDLE: Evento enviado
-```
 
+  IDLE --> CHECK: START
+
+  CHECK --> DONE: Configuração inválida
+  CHECK --> KSETUP: Decifragem ECB, CBC ou PCBC
+  CHECK --> CRYPT: Demais operações
+
+  KSETUP --> CRYPT: K10 pronta
+
+  CRYPT --> CRYPT: Bloco concluído e existem blocos restantes
+  CRYPT --> DONE: Último bloco concluído
+
+  DONE --> IDLE: Evento de término enviado
+  
 | Estado | O que faz |
 |---|---|
 | **IDLE** | Aguarda o evento de START. |
