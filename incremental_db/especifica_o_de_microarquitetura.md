@@ -4,16 +4,16 @@
 
 Este documento especifica a implementação dos módulos `minisoc_aes_top` e `minisoc_aes_dp`. As interfaces de topo, mapa de registradores e o protocolo SPI seguem estritamente o Block Guide.
 
-## 1. Decisões Arquiteturais
+## 1. Decisões
 
-| Tema | Decisão |
-|---|---|
-| Microarquitetura do AES | **Iterativa (uma rodada por ciclo)**: Utiliza um único estado de 128 bits e lógica de rodada reutilizada para otimizar área e frequência, evitando o caminho crítico longo de uma arquitetura desenrolada. |
-| Decifragem | **Cifra inversa direta**: Fluxo `InvShiftRows` → `InvSubBytes` → `AddRoundKey` → `InvMixColumns`, utilizando as round keys originais na ordem inversa. |
-| Expansão de Chave | **Em tempo real**: Round keys geradas sob demanda no `minisoc_aes_key_exp` (uma por ciclo), economizando 1408 flops que seriam necessários para pré-computação. |
-| Modos de operação | **Encadeamento externo ao datapath**: `minisoc_aes_top` executa as operações XOR de entrada e saída. O `minisoc_aes_dp` processa unicamente o bloco AES bruto. |
-| Registradores de status | Sinais `BUSY`, `DONE`, `ERROR` e `BLOCKS_DONE` retidos no domínio **clk** (always-on) para preservar o status caso o PLL seja desativado ao término. |
-| Sincronização (CDC) | Protocolo Toggle + 2 FFs para eventos, código Gray + 2 FFs para contadores, e amostragem quasi-estática para configurações. |
+| Tema | Decisão | Alternativa descartada |
+|---|---|---|
+| Microarquitetura do AES | **Iterativa, uma rodada por ciclo**: um só estado de 128 bits e uma só lógica de rodada, reutilizada nas 10 rodadas | Desenrolada (10 rodadas combinacionais): mais rápida por bloco, mas com ~10× a lógica de rodada e um caminho crítico ~10× mais longo, o que limitaria a frequência de `sys_clk`. Datapath de 32 bits: menor, mas pelo menos 4× mais ciclos de cálculo |
+| Decifragem | **Cifra inversa direta** (FIPS-197, Fig. 12): InvShiftRows → InvSubBytes → AddRoundKey → InvMixColumns. Usa as round keys como estão, e os valores do Apêndice C.1 conferem rodada a rodada | Cifra inversa equivalente (Fig. 15): estrutura igual à da cifragem, mas exige InvMixColumns nas round keys |
+| Round keys | **Em tempo real**, uma por ciclo, no `minisoc_aes_key_exp`, que sabe andar nos dois sentidos | Guardar as 11 round keys (1408 flops): elimina o passo inverso, mas custa área e potência |
+| Modos de operação | Encadeamento fora do datapath: `minisoc_aes_top` faz as XORs de entrada e de saída; `minisoc_aes_dp` só cifra ou decifra um bloco | Modos dentro do `dp` |
+| Registradores de status | `BUSY`, `DONE`, `ERROR` e o valor final de `BLOCKS_DONE` ficam no domínio **clk** (always-on) | Ficar no domínio `sys_clk`: o status seria apagado se o PLL fosse desligado depois do término |
+| CDC | Toggle + 2 flops para eventos, Gray + 2 flops para o contador, quasi-estático para a configuração | |
 
 ## 2. Domínios de Clock
 
