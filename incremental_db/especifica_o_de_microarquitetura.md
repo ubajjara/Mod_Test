@@ -9,7 +9,7 @@ Este documento especifica a implementação dos módulos `minisoc_aes_top` e `mi
 | Tema | Decisão | Alternativa descartada |
 |---|---|---|
 | Microarquitetura do AES | **Iterativa, uma rodada por ciclo**: um só estado de 128 bits e uma só lógica de rodada, reutilizada nas 10 rodadas | Desenrolada (10 rodadas combinacionais): mais rápida por bloco, mas com ~10× a lógica de rodada e um caminho crítico ~10× mais longo, o que limitaria a frequência de `sys_clk`. Datapath de 32 bits: menor, mas pelo menos 4× mais ciclos de cálculo |
-| Decifragem | **Cifra inversa direta** (FIPS-197, Fig. 12): InvShiftRows → InvSubBytes → AddRoundKey → InvMixColumns. Usa as round keys como estão, e os valores do Apêndice C.1 conferem rodada a rodada | Cifra inversa equivalente (Fig. 15): estrutura igual à da cifragem, mas exige InvMixColumns nas round keys |
+| Decifragem | **Cifra inversa direta** : InvShiftRows → InvSubBytes → AddRoundKey → InvMixColumns. Usa as round keys como estão, e os valores do Apêndice C.1 conferem rodada a rodada | Cifra inversa equivalente : estrutura igual à da cifragem, mas exige InvMixColumns nas round keys |
 | Round keys | **Em tempo real**, uma por ciclo, no `minisoc_aes_key_exp`, que sabe andar nos dois sentidos | Guardar as 11 round keys (1408 flops): elimina o passo inverso, mas custa área e potência |
 | Modos de operação | Encadeamento fora do datapath: `minisoc_aes_top` faz as XORs de entrada e de saída; `minisoc_aes_dp` só cifra ou decifra um bloco | Modos dentro do `dp` |
 | Registradores de status | `BUSY`, `DONE`, `ERROR` e o valor final de `BLOCKS_DONE` ficam no domínio **clk** (always-on) | Ficar no domínio `sys_clk`: o status seria apagado se o PLL fosse desligado depois do término |
