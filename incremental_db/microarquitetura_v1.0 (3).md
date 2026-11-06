@@ -2,13 +2,13 @@
 
 Semana 3 · Entrega: 06/11/2026 · Referência: Block Guide MiniSoC AES v1.0.0 · FIPS-197
 
-Este documento fixa **como** o `minisoc_aes_top` e o `minisoc_aes_dp` serão implementados. As interfaces de topo, os arquivos, o mapa de registradores e o protocolo SPI vêm do Block Guide e não são repetidos aqui. Onde o guia é omisso, a decisão tomada está marcada como **[A confirmar]** e reunida na seção 8.
+Este documento fixa **como** o `minisoc_aes_top` e o `minisoc_aes_dp` serão implementados. As interfaces de topo, os arquivos, o mapa de registradores e o protocolo SPI vêm do Block Guide e não são repetidos aqui. 
 
 ## 1. Decisões
 
 | Tema | Decisão | Alternativa descartada |
 |---|---|---|
-| Microarquitetura do AES | **Iterativa, uma rodada por ciclo**: um só estado de 128 bits e uma só lógica de rodada, reutilizada nas 10 rodadas | Desenrolada (10 rodadas combinacionais): cerca de 2× mais rápida por bloco (ver seção 4.3), mas com ~10× a lógica de rodada e um caminho crítico ~10× mais longo, o que limitaria a frequência de `sys_clk`. Datapath de 32 bits: menor, mas pelo menos 4× mais ciclos de cálculo |
+| Microarquitetura do AES | **Iterativa, uma rodada por ciclo**: um só estado de 128 bits e uma só lógica de rodada, reutilizada nas 10 rodadas | Desenrolada (10 rodadas combinacionais): mais rápida por bloco, mas com ~10× a lógica de rodada e um caminho crítico ~10× mais longo, o que limitaria a frequência de `sys_clk`. Datapath de 32 bits: menor, mas pelo menos 4× mais ciclos de cálculo |
 | Decifragem | **Cifra inversa direta** (FIPS-197, Fig. 12): InvShiftRows → InvSubBytes → AddRoundKey → InvMixColumns. Usa as round keys como estão, e os valores do Apêndice C.1 conferem rodada a rodada | Cifra inversa equivalente (Fig. 15): estrutura igual à da cifragem, mas exige InvMixColumns nas round keys |
 | Round keys | **Em tempo real**, uma por ciclo, no `minisoc_aes_key_exp`, que sabe andar nos dois sentidos | Guardar as 11 round keys (1408 flops): elimina o passo inverso, mas custa área e potência |
 | Modos de operação | Encadeamento fora do datapath: `minisoc_aes_top` faz as XORs de entrada e de saída; `minisoc_aes_dp` só cifra ou decifra um bloco | Modos dentro do `dp` |
