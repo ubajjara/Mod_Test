@@ -169,9 +169,6 @@ A porta é única (LIM-MEM-01), então leitura e escrita não se sobrepõem. Blo
 ### 4.2 Sinais de controle e status
 `start_sys`, `finish_evt` e `err` cruzam como descrito na seção 5. `BUSY` sobe no domínio `clk` no instante em que o START é aceito, e `DONE` é limpo nesse mesmo instante. Assim o software nunca lê `DONE` antigo logo depois do START. No término, o valor final de `BLOCKS_DONE` é congelado no domínio `clk`, então o status sobrevive ao desligamento do PLL.
 
-### 4.3 Desempenho (estimativa por contagem de estados, não medida)
-Por bloco: 5 + 11 + 4 = **20 ciclos de `sys_clk`**, mais cerca de 1 de controle. Por operação: 1 (CHECK) e, na decifragem de ECB, CBC e PCBC, +10 de KSETUP. Uma versão desenrolada reduziria CRYPT de 11 para 1 ciclo, isto é, 10 por bloco: o ganho é limitado a cerca de 2× porque 9 dos 20 ciclos são de acesso à memória. A síntese (Semanas posteriores) dirá se uma rodada fecha na frequência desejada; a hipótese é que o caminho crítico seja o da decifragem (InvSubBytes, XOR de chave e InvMixColumns, este com três `xtime` em série).
-
 ## 5. Cruzamento de domínios (CDC)
 
 | # | Cruzamento | Técnica | Por que é seguro |
@@ -183,14 +180,6 @@ Por bloco: 5 + 11 + 4 = **20 ciclos de `sys_clk`**, mais cerca de 1 de controle.
 | 5 | `BLOCKS_DONE`, `sys_clk` → `clk` | **Gray** de 9 bits + 2 flops | Só 1 bit muda por incremento (0 a 256 cabem em 9 bits) |
 | 6 | Configuração, `clk` → `sys_clk` | Quasi-estático, capturada em CHECK | O software escreve a configuração ≥ 1 quadro antes do START; restrição de SDC a definir na síntese |
 | 7 | `PLL_LOCKED` → reset do `sys_clk` | Sincronizador de reset (seção 6) | Assert assíncrono e deassert síncrono |
-
-### 5.1 Quadro SPI por toggle
-
-Em `spi_sclk`, a 40ª borda de subida deixa `rx_frame` estável e inverte `frame_tog`. Em `clk`, dois flops sincronizam o toggle, um terceiro detecta a borda (`frame_pulse`) e, no ciclo seguinte, `frame_q` captura `rx_frame`. Daí o quadro é decodificado (RWb, ADDR, DATA).
-
-Janela de estabilidade: depois da 40ª borda, `rx_frame` só muda na primeira borda de subida do quadro seguinte, no mínimo 1 período de `spi_sclk` (40 ns a 25 MHz) depois. A captura precisa de no máximo 4 ciclos de `clk` (2 flops, detecção de borda e o ciclo extra de margem), isto é, 2 ns: uma folga de cerca de 20×. Por isso não há handshake. O contador de bits é zerado enquanto `spi_cs_n = 1`, e um quadro com menos de 40 bordas é descartado. **[A confirmar]** que `spi_cs_n` fica estável antes da primeira borda de subida.
-
-Escrita: uma transação. Leitura: o primeiro quadro (`RWb = 1`) carrega `rdata_q` com o registrador de `ADDR`, e o segundo (`ADDR = 0x3F`, NOP) desloca `rdata_q` pelo MISO. O valor lido é o do instante do pedido.
 
 ## 6. Sequência de reset do domínio do sistema (guia, 4.2)
 
