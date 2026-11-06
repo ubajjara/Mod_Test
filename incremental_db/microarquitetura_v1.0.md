@@ -38,8 +38,9 @@ flowchart TB
   subgraph DP["minisoc_aes_dp: uma rodada por ciclo"]
     ST["state (128 b)"]
     FW["SubBytes, ShiftRows, MixColumns"]
-    IV["InvShiftRows, InvSubBytes, InvMixColumns"]
+    IV["InvShiftRows, InvSubBytes"]
     ARK["AddRoundKey"]
+    IMC["InvMixColumns (só na decifragem)"]
     RK["rk_cur (128 b) e key_base (128 b)"]
     KE["minisoc_aes_key_exp: passo direto e inverso, 4 S-boxes"]
     CTL["controle de rodada: contador r de 1 a 10"]
@@ -55,7 +56,9 @@ flowchart TB
   RK --> ARK
   RK --> KE
   KE --> RK
-  ARK --> ST
+  ARK -- "cifragem" --> ST
+  ARK -- "decifragem" --> IMC
+  IMC --> ST
   ST -- "blk_o" --> POST
   POST --> CH
 ```
@@ -97,14 +100,14 @@ Duas consequências para a RTL. Como o resultado é gravado **no lugar**, `C` pr
 stateDiagram-v2
   [*] --> IDLE
   IDLE --> CHECK: start_sys
-  CHECK --> DONE: config invalida (ERROR)
+  CHECK --> DONE: config inválida (ERROR)
   CHECK --> KSETUP: decifra em ECB, CBC ou PCBC
   CHECK --> RD: demais casos
   KSETUP --> RD: key_ready
   RD --> CRYPT: 4 palavras lidas
   CRYPT --> WR: blk_done
   WR --> RD: faltam blocos
-  WR --> DONE: ultimo bloco
+  WR --> DONE: último bloco
   DONE --> IDLE
 ```
 
