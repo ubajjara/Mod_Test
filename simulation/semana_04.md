@@ -67,34 +67,6 @@ Na decifragem do Apêndice B só o resultado final é conferido, porque a FIPS-1
 
 **Simuladores.** Os três passam no Icarus Verilog 12.0 e no Verilator 5.020. Lint: `verilator --lint-only -Wall` sem avisos em `minisoc_aes_dp` e `minisoc_aes_key_exp` (com os módulos de `rtl/`).
 
-**Detecção de defeitos.** Injetei três defeitos, um por vez, em cópias do RTL, e cada testbench relevante deu FAIL e apontou o ponto:
 
-- Rcon[9] errado: o testbench do `key_exp` acusou K8→K9 e K9→K8.
-- MixColumns na rodada 10 da cifragem: o do C.1 acusou na rodada 10.
-- InvMixColumns na rodada 10 da decifragem: o do B acusou no resultado final.
 
-Esses são três casos, não uma campanha de mutação completa.
 
-**Também foi rodado fora dos testbenches do entregável:** um testbench mais rígido, escrito por mim, com 300 chaves aleatórias no `key_exp` e 200 chaves × vários blocos no `dp` (cifra, decifra e ida-e-volta, contra um modelo de referência independente), passou nas partes de round keys, vetores da FIPS e aleatório. Ele não faz parte da entrega.
-
-**O que não foi feito.** Não havia VCS nem `vlogan` neste ambiente. O `make syntax` (`vlogan +lint=all`) e o `make run` não foram executados; o critério "lint sem erros" foi verificado com o Verilator. Vale rodar o `make syntax` no ambiente do curso antes de entregar.
-
-## 5. Pontos de atenção para a integração (Semana 5)
-
-- **`busy_o` fica em 0 durante o percurso até K10 na decifragem** (`setup_q = 1`). Se o `top` decidir só por `busy_o`, pode achar que o dp está livre. O `top` deve esperar `key_ready_o` antes de `blk_start_i`. Alternativa: `busy_o = busy_q | setup_q`.
-- **`key_load_i` com o dp ocupado não é ignorado:** reescreve `rk_q`, `base_q` e `idx_q` e corrompe a operação em curso. O contrato é emitir `key_load_i` só com `busy_o = 0`; se quiser robustez no dp, condicione `key_load_i` a `~busy_q & ~setup_q`.
-- **Modos CFB, OFB e CTR** usam sempre a cifragem: o `top` deve emitir `key_load_i` com `decrypt_i = 0` nesses modos.
-- **`blk_done_o` e a FSM do `top`:** `blk_done_o` vale 1 no primeiro ciclo em que `blk_o` é válido. Se a FSM só sair de CRYPT ao ver `blk_done_o`, CRYPT dura 1 ciclo a mais do que uma contagem fixa. Como `blk_o` é estável até o próximo `blk_start_i`, o `top` pode começar a gravação no próprio ciclo do `blk_done_o`.
-- `blk_o` é X até o primeiro bloco (os registradores de dados não têm reset).
-
-## 6. Como reproduzir
-
-```
-make syntax                                   # vlogan +lint=all (ambiente do curso)
-make run                                      # TOP = tb_minisoc_aes_week4_key_exp
-make run TOP=tb_minisoc_aes_week4_appb
-make run TOP=tb_minisoc_aes_week4_appc
-
-# alternativa sem VCS (para cada TB: key_exp, appb, appc)
-iverilog -g2012 -s tb_minisoc_aes_week4_appc -o appc.vvp rtl/*.sv tb/tb_minisoc_aes_week4_appc.sv && vvp appc.vvp
-```
